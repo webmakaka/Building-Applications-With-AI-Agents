@@ -285,31 +285,3 @@ pytest -q
 ```
 
 All tests should pass without errors.
-
----
-
-## Contributing
-
-We welcome contributions! To add a new scenario or framework, follow these steps:
-
-1. **Add a new scenario spec**
-
-   - Create `src/common/scenarios/<your_scenario>/`.
-   - Write a `spec.md` (plain-English description), add sample JSON under `data/`, and place full evaluation “gold” JSON/CSV in `evaluation/`.
-
-2. **Implement the scenario in each framework**
-
-   - LangGraph: `src/frameworks/langgraph/scenarios/<your_scenario>/implementation.py`
-   - LangChain: `src/frameworks/langchain/scenarios/<your_scenario>/implementation.py`
-   - Autogen: `src/frameworks/autogen/scenarios/<your_scenario>/implementation.py`
-   - (Follow the same pattern for any new framework.)
-
-3. **Write or update tests**
-
-   - If you add new utilities under `common/` or `observability/`, include tests under `tests/evaluation/` or `tests/observability/`.
-   - For a new scenario, you can add a quick smoke test under `tests/scenarios/<your_scenario>/test_spec_consistency.py` to verify all frameworks produce at least valid JSON output.
-
-4. **Submit a Pull Request**
-
-   - Verify all existing tests pass (`pytest -q`).
-   - Update this `README.md` if you introduce new high-level functionality or folders.
