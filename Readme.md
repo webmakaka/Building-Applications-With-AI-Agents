@@ -1,5 +1,7 @@
 # [Книга][Альбада Майкл] Создание приложений с ИИ-агентами. Проектирование и внедрение мультиагентных систем [RUS, 2026]
 
+<img src="./img/book-cover.jpg" alt="Building Applications with AI" height="512px" align="right">
+
 [Book][Michael Albada] Building Applications with AI Agents [ENG, 2025]
 
 **Оригинальный код книги:**  
@@ -15,58 +17,44 @@ https://github.com/michaelalbada/BuildingApplicationsWithAIAgents
 
 This repository provides a **unified, multi-framework platform** for designing, implementing, and evaluating AI-powered agents. By separating **scenario definitions** from **framework-specific code**, we enable:
 
-* A **single spec** for each scenario (under `src/common/scenarios/`).
-* **Parallel implementations** in LangGraph, LangChain, Autogen (and more).
-* A **shared evaluation harness** to compare outputs across frameworks.
-* **Built-in observability** (Loki logging & OpenTelemetry/Tempo).
-* **Unit tests** for core utilities and telemetry setup.
+- A **single spec** for each scenario (under `src/common/scenarios/`).
+- **Parallel implementations** in LangGraph, LangChain, Autogen (and more).
+- A **shared evaluation harness** to compare outputs across frameworks.
+- **Built-in observability** (Loki logging & OpenTelemetry/Tempo).
+- **Unit tests** for core utilities and telemetry setup.
 
 Whether you’re building an e-commerce support bot, an IT support desk assistant, a voice agent, or anything in between, this codebase helps you scale from prototype to production coverage—while maintaining consistency and reusability.
 
 ---
 
-## Book
-
-This repository accompanies the O’Reilly Media book
-[**Building Applications with AI Agents: Designing and Implementing Multi-Agent Systems**](https://www.oreilly.com/library/view/building-applications-with/9781098176495/).
-All scenarios, architectural patterns, and observability examples reflect the lessons and code samples from the book. Feel free to follow along chapter by chapter or dive straight into the code!
-
-<div align="center">
-  <a href="https://www.oreilly.com/library/view/building-applications-with/9781098176495/">
-    <img src="resources/book_cover.jpeg" alt="Building Applications with AI (O’Reilly)">
-  </a>
-</div>
-
----
-
 ## Features
 
-* **Framework-Agnostic Scenario Specs**
+- **Framework-Agnostic Scenario Specs**
   Each scenario under `src/common/scenarios/<scenario_name>/` contains:
 
-  * `spec.md`: A plain-English description of the user journey and success criteria.
-  * `data/`: Sample input/output JSON for quick tests or demos.
-  * `evaluation/`: A shared `run_eval.py` harness plus a “gold” evaluation set (JSON or CSV).
+  - `spec.md`: A plain-English description of the user journey and success criteria.
+  - `data/`: Sample input/output JSON for quick tests or demos.
+  - `evaluation/`: A shared `run_eval.py` harness plus a “gold” evaluation set (JSON or CSV).
 
-* **Multi-Framework Implementations**
+- **Multi-Framework Implementations**
   Implement each scenario in parallel under:
 
-  * `src/frameworks/langgraph/`
-  * `src/frameworks/autogen/`
-    *(Easily add more frameworks by following the same folder patterns.)*
+  - `src/frameworks/langgraph/`
+  - `src/frameworks/autogen/`
+    _(Easily add more frameworks by following the same folder patterns.)_
 
-* **Built-In Observability**
+- **Built-In Observability**
 
-  * **Loki Logger**:
+  - **Loki Logger**:
     `src/common/observability/loki_logger.py` posts structured logs to a local Loki endpoint.
-  * **OpenTelemetry / Tempo**:
+  - **OpenTelemetry / Tempo**:
     `src/common/observability/instrument_tempo.py` sets up an OTLP exporter and instruments spans (parent & child) to Tempo.
 
-* **Unit Tests for Core Utilities & Telemetry**
+- **Unit Tests for Core Utilities & Telemetry**
 
-  * Tests for evaluation utilities:
+  - Tests for evaluation utilities:
     `tests/evaluation/test_ai_judge.py` & `test_memory_evaluation.py`
-  * Tests for observability code (monkeypatching exporters):
+  - Tests for observability code (monkeypatching exporters):
     `tests/observability/test_loki_logger.py` & `test_instrument_tempo.py`
 
 ---
@@ -95,7 +83,7 @@ All scenarios, architectural patterns, and observability examples reflect the le
    pip install -e src
    ```
 
-   * `pip install -e src` ensures that modules under `src/` (e.g., `common.*`, `frameworks.*`) are importable.
+   - `pip install -e src` ensures that modules under `src/` (e.g., `common.*`, `frameworks.*`) are importable.
 
 ---
 
@@ -113,7 +101,6 @@ python -m src.common.evaluation.batch_evaluation \
   --dataset src/common/evaluation/scenarios/ecommerce_customer_support_evaluation_set.json \
   --graph_py src/frameworks/langgraph_agents/ecommerce_customer_support/customer_support_agent.py
 ```
-
 
 ### 2. Launching a Single Framework Agent
 
@@ -137,7 +124,7 @@ Replace `run_ecommerce_support` and the payload shape for other scenarios or fra
 
 ### 3. Observability
 
-* **Loki Logging**
+- **Loki Logging**
   Any call to `log_to_loki(label, message)` in your code sends a JSON payload to:
 
   ```
@@ -146,7 +133,7 @@ Replace `run_ecommerce_support` and the payload shape for other scenarios or fra
 
   Point Grafana/Loki at that endpoint to view logs in real time.
 
-* **OpenTelemetry / Tempo**
+- **OpenTelemetry / Tempo**
 
   ```python
   from common.observability.instrument_tempo import do_work
@@ -280,15 +267,15 @@ PYCODE
 
 We use **pytest** for all unit tests:
 
-* **Evaluation utilities tests**:
+- **Evaluation utilities tests**:
 
-  * `tests/evaluation/test_ai_judge.py`
-  * `tests/evaluation/test_memory_evaluation.py`
+  - `tests/evaluation/test_ai_judge.py`
+  - `tests/evaluation/test_memory_evaluation.py`
 
-* **Observability tests**:
+- **Observability tests**:
 
-  * `tests/observability/test_loki_logger.py`
-  * `tests/observability/test_instrument_tempo.py`
+  - `tests/observability/test_loki_logger.py`
+  - `tests/observability/test_instrument_tempo.py`
 
 To run the full test suite:
 
@@ -307,23 +294,22 @@ We welcome contributions! To add a new scenario or framework, follow these steps
 
 1. **Add a new scenario spec**
 
-   * Create `src/common/scenarios/<your_scenario>/`.
-   * Write a `spec.md` (plain-English description), add sample JSON under `data/`, and place full evaluation “gold” JSON/CSV in `evaluation/`.
+   - Create `src/common/scenarios/<your_scenario>/`.
+   - Write a `spec.md` (plain-English description), add sample JSON under `data/`, and place full evaluation “gold” JSON/CSV in `evaluation/`.
 
 2. **Implement the scenario in each framework**
 
-   * LangGraph: `src/frameworks/langgraph/scenarios/<your_scenario>/implementation.py`
-   * LangChain: `src/frameworks/langchain/scenarios/<your_scenario>/implementation.py`
-   * Autogen: `src/frameworks/autogen/scenarios/<your_scenario>/implementation.py`
-   * (Follow the same pattern for any new framework.)
+   - LangGraph: `src/frameworks/langgraph/scenarios/<your_scenario>/implementation.py`
+   - LangChain: `src/frameworks/langchain/scenarios/<your_scenario>/implementation.py`
+   - Autogen: `src/frameworks/autogen/scenarios/<your_scenario>/implementation.py`
+   - (Follow the same pattern for any new framework.)
 
 3. **Write or update tests**
 
-   * If you add new utilities under `common/` or `observability/`, include tests under `tests/evaluation/` or `tests/observability/`.
-   * For a new scenario, you can add a quick smoke test under `tests/scenarios/<your_scenario>/test_spec_consistency.py` to verify all frameworks produce at least valid JSON output.
+   - If you add new utilities under `common/` or `observability/`, include tests under `tests/evaluation/` or `tests/observability/`.
+   - For a new scenario, you can add a quick smoke test under `tests/scenarios/<your_scenario>/test_spec_consistency.py` to verify all frameworks produce at least valid JSON output.
 
 4. **Submit a Pull Request**
 
-   * Verify all existing tests pass (`pytest -q`).
-   * Update this `README.md` if you introduce new high-level functionality or folders.
-
+   - Verify all existing tests pass (`pytest -q`).
+   - Update this `README.md` if you introduce new high-level functionality or folders.
