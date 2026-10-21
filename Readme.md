@@ -13,6 +13,26 @@ https://github.com/michaelalbada/BuildingApplicationsWithAIAgents
 
 ---
 
+### Краткое содержание
+
+<ul>
+  <li>Глава 1. Знакомство с агентами</li>
+  <li>Глава 2. Проектирование агентных систем</li>
+  <li>Глава 3. UX-дизайн для агентных систем</li>
+  <li>Глава 4. Инструменты</li>
+  <li>Глава 5. Оркестрация</li>
+  <li>Глава 6. Знания и память</li>
+  <li>Глава 7. Обучение в агентных системах</li>
+  <li>Глава 8. От одного агента ко многим</li>
+  <li>Глава 9. Проверки и измерения</li>
+  <li>Глава 10. Мониторинг на стадии эксплуатации</li>
+  <li>Глава 11. Циклы улучшения</li>
+  <li>Глава 12. Защита агентных систем</li>
+  <li>Глава 13. Взаимодействия «человек — агент»</li>
+</ul>
+
+---
+
 ## Overview
 
 This repository provides a **unified, multi-framework platform** for designing, implementing, and evaluating AI-powered agents. By separating **scenario definitions** from **framework-specific code**, we enable:
