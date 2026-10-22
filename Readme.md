@@ -17,7 +17,7 @@ https://github.com/michaelalbada/BuildingApplicationsWithAIAgents
 
 <ul>
   <li>✅ 01. Знакомство с агентами</li>
-  <li>02. Проектирование агентных систем</li>
+  <li>✅ 02. Проектирование агентных систем</li>
   <li>03. UX-дизайн для агентных систем</li>
   <li>04. Инструменты</li>
   <li>05. Оркестрация</li>
