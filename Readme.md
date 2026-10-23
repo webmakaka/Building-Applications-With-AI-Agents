@@ -20,9 +20,9 @@ https://github.com/michaelalbada/BuildingApplicationsWithAIAgents
 ### Краткое содержание
 
 <ul>
-  <li>:white_check_mark: :zzz: 01. Знакомство с агентами</li>
-  <li>:white_check_mark: :zzz: 02. Проектирование агентных систем</li>
-  <li>:white_check_mark: :zzz: 03. UX-дизайн для агентных систем</li>
+  <li>:white_check_mark: :cry: 01. Знакомство с агентами</li>
+  <li>:white_check_mark: :cry: 02. Проектирование агентных систем</li>
+  <li>:white_check_mark: :cry: 03. UX-дизайн для агентных систем</li>
   <li>04. Инструменты</li>
   <li>05. Оркестрация</li>
   <li>06. Знания и память</li>
