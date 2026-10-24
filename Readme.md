@@ -136,6 +136,8 @@ $ python -m src.common.evaluation.batch_evaluation \
 
 If you want to manually run the LangGraph version of the e-commerce agent:
 
+:warning: [FAIL!] ХЗ где искать implementation! :warning:  
+
 ```bash
 $ python - << 'PYCODE'
 from src.frameworks.langgraph.scenarios.ecommerce_customer_support.implementation import run_ecommerce_support
@@ -174,9 +176,11 @@ do_work()  # Emits a parent span and three child spans to the OTLP endpoint (loc
 
 ---
 
-## Directory Structure
+<br/>
 
-Here’s a bird’s-eye view of how everything is organized:
+## Структура каталогов
+
+Вот краткий обзор того, как все устроено. 
 
 ```
 agents/
