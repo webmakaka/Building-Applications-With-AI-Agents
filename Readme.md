@@ -87,27 +87,25 @@ Whether you’re building an e-commerce support bot, an IT support desk assistan
 
 1. **Clone the Repo**
 
-   ```bash
-   git clone https://github.com/your-org/agents.git
-   cd agents
-   ```
+```bash
+$ git clone https://github.com/webmakaka/Building-Applications-With-AI-Agents
+$ cd Building-Applications-With-AI-Agents/app
+```
 
 2. **Create a Conda (or Virtualenv) Environment**
 
-   ```bash
-   # Using Conda
-   conda env create -f environment.yml
-   conda activate agents
-   ```
+```bash
+$ pip install uv
+$ uv venv --python=python3.12
+$ source .venv/bin/activate
+$ uv pip install -r requirements.txt
+```
 
 3. **Install Python Dependencies (and Editable “src” Packages)**
 
-   ```bash
-   pip install -r requirements.txt
-   pip install -e src
-   ```
-
-   - `pip install -e src` ensures that modules under `src/` (e.g., `common.*`, `frameworks.*`) are importable.
+```bash
+$ pip install -r requirements.txt
+```
 
 ---
 
@@ -119,7 +117,7 @@ Each scenario includes a shared evaluator script:
 
 ```bash
 # From the repo root:
-cd src/common/scenarios/ecommerce_customer_support/evaluation
+cd src/common/evaluation/scenarios/
 
 python -m src.common.evaluation.batch_evaluation \
   --dataset src/common/evaluation/scenarios/ecommerce_customer_support_evaluation_set.json \
