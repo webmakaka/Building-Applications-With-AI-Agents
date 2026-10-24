@@ -93,7 +93,7 @@ $ git clone https://github.com/webmakaka/Building-Applications-With-AI-Agents
 $ cd Building-Applications-With-AI-Agents/app
 ```
 
-2. **Create a Conda (or Virtualenv) Environment**
+2. **Create a Virtual Environment**
 
 ```bash
 $ pip install uv
