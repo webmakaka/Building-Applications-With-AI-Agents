@@ -137,8 +137,8 @@ $ python -m src.common.evaluation.batch_evaluation \
 If you want to manually run the LangGraph version of the e-commerce agent:
 
 ```bash
-python - << 'PYCODE'
-from frameworks.langgraph.scenarios.ecommerce_customer_support.implementation import run_ecommerce_support
+$ python - << 'PYCODE'
+from src.frameworks.langgraph.scenarios.ecommerce_customer_support.implementation import run_ecommerce_support
 
 payload = {
   "order": {"order_id": "A12345", "status": "Delivered", "total": 19.99},
@@ -157,18 +157,18 @@ Replace `run_ecommerce_support` and the payload shape for other scenarios or fra
 - **Loki Logging**
   Any call to `log_to_loki(label, message)` in your code sends a JSON payload to:
 
-  ```
-  http://localhost:3100/loki/api/v1/push
-  ```
+```
+http://localhost:3100/loki/api/v1/push
+```
 
   Point Grafana/Loki at that endpoint to view logs in real time.
 
 - **OpenTelemetry / Tempo**
 
-  ```python
-  from common.observability.instrument_tempo import do_work
-  do_work()  # Emits a parent span and three child spans to the OTLP endpoint (localhost:3200)
-  ```
+```python
+from common.observability.instrument_tempo import do_work
+do_work()  # Emits a parent span and three child spans to the OTLP endpoint (localhost:3200)
+```
 
   To instrument your own functions, import `tracer = common.observability.instrument_tempo.tracer` and wrap code in `with tracer.start_as_current_span("span-name"):` blocks.
 
@@ -255,11 +255,11 @@ agents/
 
 ```bash
 # From repo root:
-cd src/frameworks/langchain/scenarios/ecommerce_customer_support
+$ cd app
 
 # Example usage:
-python - << 'PYCODE'
-from frameworks.langchain.scenarios.ecommerce_customer_support.implementation import run_ecommerce_support
+$ python - << 'PYCODE'
+from src.frameworks.langchain.scenarios.ecommerce_customer_support.implementation import run_ecommerce_support
 
 payload = {
   "order": {"order_id": "A12345", "status": "Delivered", "total": 19.99},
@@ -275,10 +275,10 @@ PYCODE
 
 ```bash
 # From repo root:
-cd src/frameworks/langgraph/scenarios/ecommerce_customer_support
+$ cd app
 
 # Example usage:
-python - << 'PYCODE'
+$ python - << 'PYCODE'
 from frameworks.langgraph.scenarios/ecommerce_customer_support.implementation import run_ecommerce_support
 
 payload = {
@@ -310,8 +310,8 @@ We use **pytest** for all unit tests:
 To run the full test suite:
 
 ```bash
-cd /Users/your-user/dev/agents
-pytest -q
+$ cd /Users/your-user/dev/agents
+$ pytest -q
 ```
 
 All tests should pass without errors.
