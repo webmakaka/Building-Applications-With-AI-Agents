@@ -9,8 +9,8 @@ https://github.com/michaelalbada/BuildingApplicationsWithAIAgents
 
 ---
 
-**Пока книга кажется скучной, устаревшей и неинтересной!**  
-:warning: Автор не смог даже нормально код к книге выложить! :warning:
+:warning: **Пока книга кажется скучной, устаревшей и неинтересной!**:warning:   
+:warning: Автор не смог нормально код к книге выложить! :warning:
 
 ---
 
@@ -111,7 +111,7 @@ $ uv pip install -r requirements.txt
 ### 1. Running a Scenario Evaluation
 
 :warning: Нужные токены! :warning:
-:warning: Дофига всего качается! :warning:
+:warning: Дофига всего качается! Гига на 2-3 :warning:
 
 Each scenario includes a shared evaluator script:
 
