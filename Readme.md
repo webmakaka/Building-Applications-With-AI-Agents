@@ -112,18 +112,26 @@ $ pip install -r requirements.txt
 
 ## Usage
 
+<br/>
+
 ### 1. Running a Scenario Evaluation
 
 Each scenario includes a shared evaluator script:
 
 ```bash
-# From the repo root:
-cd src/common/evaluation/scenarios/
+$ pwd
+Building-Applications-With-AI-Agents/app
 
-python -m src.common.evaluation.batch_evaluation \
-  --dataset src/common/evaluation/scenarios/ecommerce_customer_support_evaluation_set.json \
+$ python -m ensurepip --default-pip
+$ python -m pip install --upgrade pip
+$ python -m pip install bert_score
+
+$ python -m src.common.evaluation.batch_evaluation \
+  --dataset src/common/evaluation/scenarios/ecommerce_customer_support_evaluation_set.jsonl \
   --graph_py src/frameworks/langgraph_agents/ecommerce_customer_support/customer_support_agent.py
 ```
+
+<br/>
 
 ### 2. Launching a Single Framework Agent
 
