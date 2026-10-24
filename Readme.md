@@ -110,8 +110,8 @@ $ uv pip install -r requirements.txt
 
 ### 1. Running a Scenario Evaluation
 
-:warning: Нужные токены! :warning:
-:warning: Дофига всего качается! Гига на 2-3 :warning:
+:warning: Нужные токены! :warning:  
+:warning: Дофига всего качается! Гига на 2-3 :warning:  
 
 Each scenario includes a shared evaluator script:
 
