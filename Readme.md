@@ -102,12 +102,6 @@ $ source .venv/bin/activate
 $ uv pip install -r requirements.txt
 ```
 
-3. **Install Python Dependencies (and Editable “src” Packages)**
-
-```bash
-$ pip install -r requirements.txt
-```
-
 ---
 
 ## Usage
@@ -122,9 +116,11 @@ Each scenario includes a shared evaluator script:
 $ pwd
 Building-Applications-With-AI-Agents/app
 
-$ python -m ensurepip --default-pip
-$ python -m pip install --upgrade pip
-$ python -m pip install bert_score
+// $ python -m ensurepip --default-pip
+// $ python -m pip install --upgrade pip
+// $ python -m pip install bert_score
+
+$ uv pip install  bert_score
 
 $ python -m src.common.evaluation.batch_evaluation \
   --dataset src/common/evaluation/scenarios/ecommerce_customer_support_evaluation_set.jsonl \
