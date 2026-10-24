@@ -110,18 +110,21 @@ $ uv pip install -r requirements.txt
 
 ### 1. Running a Scenario Evaluation
 
+:warning: Нужные токены! :warning:
+:warning: Дофига всего качается! :warning:
+
 Each scenario includes a shared evaluator script:
 
 ```bash
 $ pwd
 Building-Applications-With-AI-Agents/app
 
-// $ python -m ensurepip --default-pip
-// $ python -m pip install --upgrade pip
-// $ python -m pip install bert_score
+$ uv pip install bert_score sentence_transformers traceloop-sdk
 
-$ uv pip install  bert_score
+$ export OPENAI_API_KEY="ваш_ключ_openai"
+$ export TRACELOOP_API_KEY="ваш_ключ_traceloop"
 
+// [FAIL!] Нет у меня никаких ключей
 $ python -m src.common.evaluation.batch_evaluation \
   --dataset src/common/evaluation/scenarios/ecommerce_customer_support_evaluation_set.jsonl \
   --graph_py src/frameworks/langgraph_agents/ecommerce_customer_support/customer_support_agent.py
