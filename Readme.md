@@ -8,7 +8,7 @@
 https://github.com/michaelalbada/BuildingApplicationsWithAIAgents
 
 ---
-
+:triangular_flag_on_post: Код проектов книги обновляется! :triangular_flag_on_post:  
 :warning: **Пока книга кажется скучной, устаревшей и неинтересной!**:warning:   
 :warning: Автор не смог нормально код к книге выложить! :warning:
 
