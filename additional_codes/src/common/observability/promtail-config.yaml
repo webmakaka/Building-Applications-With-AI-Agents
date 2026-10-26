@@ -1,0 +1,50 @@
+server:
+  http_listen_port: 9080
+  grpc_listen_port: 0
+
+positions:
+  filename: /tmp/positions.yaml
+
+clients:
+  - url: http://loki:3100/loki/api/v1/push
+
+scrape_configs:
+  - job_name: system
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: varlogs
+          __path__: /var/log/*.log
+
+  # 添加Temporal Server日志配置
+  - job_name: temporal
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: temporal
+          app: temporal-server
+          component: workflow-engine
+          __path__: /home/ubuntu/temporal/temporal-server.log
+    pipeline_stages:
+      # 使用logfmt解析器提取键值对
+      - logfmt:
+          mapping:
+            time: timestamp
+            level: level
+            msg: message
+            component: component
+            service: service
+            scope: scope
+      # 将level和component作为标签，便于过滤
+      - labels:
+          level:
+          component:
+      # 设置时间戳
+      - timestamp:
+          source: timestamp
+          format: RFC3339
+      # 将解析后的消息作为日志内容
+      - output:
+          source: message

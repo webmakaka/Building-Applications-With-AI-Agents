@@ -1,0 +1,73 @@
+services:
+  loki:
+    image: grafana/loki:2.9.2
+    command: -config.file=/etc/loki/local-config.yaml
+    ports:
+      - "3100:3100"
+    volumes:
+      - ./loki-config.yaml:/etc/loki/local-config.yaml
+      - ./loki-data:/loki
+
+  grafana:
+    image: grafana/grafana:10.0.3
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana-storage:/var/lib/grafana
+  
+  promtail:
+    image: grafana/promtail:2.9.2
+    volumes:
+      - /var/log:/var/log
+      - /home/ubuntu/temporal:/home/ubuntu/temporal:ro  # 添加temporal日志
+      - ./promtail-config.yaml:/etc/promtail/promtail.yaml
+    command: -config.file=/etc/promtail/promtail.yaml
+    depends_on:
+      - loki
+  
+  tempo:
+    image: grafana/tempo:2.7.0
+    command:
+      - "--config.file=/etc/tempo/local-config.yaml"
+    ports:
+      #- "4317:4317" # OTLP/gRPC receiver (for Traceloop → Tempo)
+      #- "4318:4318" # OTLP HTTP Ingestion (Optional)
+      - "3200:3200" # Tempo’s HTTP “query” API (Grafana → Tempo)
+    volumes:
+      - ./tempo-config.yaml:/etc/tempo/local-config.yaml
+      - ./tempo-data:/tempo-data
+
+  otel-collector:
+    image: otel/opentelemetry-collector:0.88.0
+    container_name: otel-collector
+    command: ["--config=/etc/otel-collector-config.yaml"]
+    volumes:
+      - ./otel-collector-config.yaml:/etc/otel-collector-config.yaml
+    ports:
+      - "4317:4317" # OTLP/gRPC
+      - "4318:4318" # OTLP/HTTP
+      - "8889:8889" # Prometheus scrape port
+    depends_on:
+      - tempo
+
+  prometheus:
+    image: prom/prometheus:v2.47.0
+    container_name: prometheus
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+    ports:
+      - "9191:9090"
+    volumes:
+      - ./prometheus.yaml:/etc/prometheus/prometheus.yml
+      - prometheus-data:/prometheus
+    depends_on:
+      - otel-collector        
+
+volumes:
+  grafana-storage:
+  loki-data:
+  tempo-data:
+  prometheus-data: # Add this volume

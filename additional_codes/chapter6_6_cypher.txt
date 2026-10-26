@@ -1,0 +1,80 @@
+// Create nodes for concepts and entities
+CREATE (:Concept {name: 'Artificial Intelligence'}); 
+CREATE (:Concept {name: 'Machine Learning'});
+CREATE (:Concept {name: 'Deep Learning'}); 
+CREATE (:Concept {name: 'Neural Networks'}); 
+CREATE (:Concept {name: 'Computer Vision'});
+CREATE (:Concept {name: 'Natural Language Processing'});
+
+CREATE (:Tool {name: 'TensorFlow', creator: 'Google'}); 
+CREATE (:Tool {name: 'PyTorch', creator: 'Facebook'}); 
+CREATE (:Model {name: 'BERT', year: 2018});
+CREATE (:Model {name: 'ResNet', year: 2015});
+
+// Create relationships between concepts 
+MATCH
+  (ai:Concept {name:'Artificial Intelligence'}), 
+  (ml:Concept {name:'Machine Learning'})
+CREATE (ml)-[:SUBSET_OF]->(ai);
+
+MATCH
+  (ml:Concept {name:'Machine Learning'}), 
+  (dl:Concept {name:'Deep Learning'})
+CREATE (dl)-[:SUBSET_OF]->(ml);
+
+MATCH
+  (dl:Concept {name:'Deep Learning'}), 
+  (nn:Concept {name:'Neural Networks'})
+CREATE (nn)-[:USED_IN]->(dl);
+
+MATCH
+  (ai:Concept {name:'Artificial Intelligence'}), 
+  (cv:Concept {name:'Computer Vision'})
+CREATE (cv)-[:APPLICATION_OF]->(ai);
+
+MATCH
+  (ai:Concept {name:'Artificial Intelligence'}), 
+  (nlp:Concept {name:'Natural Language Processing'})
+CREATE (nlp)-[:APPLICATION_OF]->(ai);
+
+// Create relationships to tools and models 
+MATCH
+  (tensorflow:Tool {name:'TensorFlow'}), 
+  (nn:Concept {name:'Neural Networks'})
+CREATE (tensorflow)-[:IMPLEMENTS]->(nn);
+ 
+MATCH
+  (pytorch:Tool {name:'PyTorch'}), 
+  (nn:Concept {name:'Neural Networks'})
+CREATE (pytorch)-[:IMPLEMENTS]->(nn);
+
+MATCH
+  (nlp:Concept {name:'Natural Language Processing'}), 
+  (bert:Model {name:'BERT'})
+CREATE (bert)-[:BELONGS_TO]->(nlp);
+
+MATCH
+  (cv:Concept {name:'Computer Vision'}), 
+  (resnet:Model {name:'ResNet'})
+CREATE (resnet)-[:BELONGS_TO]->(cv);
+
+MATCH
+  (tensorflow:Tool {name:'TensorFlow'}), 
+  (bert:Model {name:'BERT'})
+CREATE (bert)-[:BUILT_WITH]->(tensorflow);
+
+MATCH
+  (pytorch:Tool {name:'PyTorch'}), 
+  (resnet:Model {name:'ResNet'})
+CREATE (resnet)-[:BUILT_WITH]->(pytorch);
+
+// Query for finding relationships between concepts 
+MATCH path = shortestPath(
+  (concept1:Concept {name: 'Natural Language Processing'})-[*]-
+  (concept2:Concept{name: 'Deep Learning'})
+)
+RETURN path;
+
+// Query for finding all models that use TensorFlow
+MATCH (model:Model)-[:BUILT_WITH]->(tool:Tool {name: 'TensorFlow'}) 
+RETURN model.name AS model, model.year AS year;

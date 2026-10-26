@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>AI实时语音对话</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+    h2 { margin-bottom: 10px; }
+    
+    /* 聊天框样式 */
+    #chat-container {
+        width: 100%;
+        max-width: 600px;
+        height: 500px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        overflow-y: auto;
+        padding: 15px;
+        background: #f9f9f9;
+        margin-bottom: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .message {
+        padding: 8px 12px;
+        border-radius: 12px;
+        max-width: 80%;
+        line-height: 1.4;
+        word-wrap: break-word;
+    }
+    
+    .user {
+        align-self: flex-end;
+        background-color: #007bff;
+        color: white;
+        border-bottom-right-radius: 2px;
+    }
+    
+    .assistant {
+        align-self: flex-start;
+        background-color: #e5e5ea;
+        color: black;
+        border-bottom-left-radius: 2px;
+    }
+
+    .status {
+        font-size: 12px;
+        color: #999;
+        text-align: center;
+        margin-top: 5px;
+    }
+
+    #controls { margin-bottom: 20px; }
+    button { padding: 10px 20px; font-size: 16px; cursor: pointer; }
+    
+    #log { 
+        width: 100%; max-width: 600px; height: 100px; 
+        background: #333; color: #0f0; 
+        font-family: monospace; font-size: 10px; 
+        padding: 10px; overflow-y: scroll; 
+    }
+</style>
+</head>
+<body>
+
+<h2>AI实时语音对话</h2>
+
+<div id="chat-container">
+    <div class="status">请按“开始”按钮开始对话...</div>
+</div>
+
+<div id="controls">
+    <button id="start">🎤 开始</button>
+    <button id="stop" disabled>⛔ 停止</button>
+</div>
+
+<!--
+<div id="log"></div>
+-->
+
+<script>
+const WS_URL = "ws://jeanye.cn:5050/voice"; // 请确保这是你的服务器地址
+
+let ws = null;
+let audioContext = null;
+let scriptProcessor = null;
+let micStream = null;
+let nextStartTime = 0;
+
+// 【核心状态管理变量】
+let currentAiMsgDiv = null;    // 当前正在打字的 AI 消息框
+let currentUserMsgDiv = null;  // 当前正在等待转录的用户消息框（占位符）
+let pendingUserTurns = [];     // 存储已转录完成，等待 AI 信号释放的用户消息队列
+let transcriptionTimeout = null; // 【新增】转录超时定时器
+
+
+// 通用添加消息函数
+function createMessageDiv(role, text) {
+    const container = document.getElementById("chat-container");
+    const div = document.createElement("div");
+    div.className = `message ${role}`;
+    div.textContent = text;
+    container.appendChild(div);
+    container.scrollTop = container.scrollHeight;
+    return div;
+}
+
+// 【关键函数】释放队列中的第一条消息（强制交错）
+function forceRenderPendingUserTurn() {
+    if (pendingUserTurns.length > 0) {
+        const turn = pendingUserTurns.shift(); 
+        if (turn.div) {
+            turn.div.textContent = turn.transcript;
+            console.log(`Queue Released: Rendered user message: ${turn.transcript}`);
+        }
+    }
+}
+
+// Float32 -> Int16
+function floatTo16BitPCM(float32Buf) {
+    const int16Buf = new Int16Array(float32Buf.length);
+    for (let i = 0; i < float32Buf.length; i++) {
+        let s = Math.max(-1, Math.min(1, float32Buf[i]));
+        int16Buf[i] = s < 0 ? s * 0x8000 : s * 0x7FFF;
+    }
+    return int16Buf;
+}
+
+// Int16 -> Float32
+function pcm16ToFloat32(int16Buf) {
+    const float32 = new Float32Array(int16Buf.length);
+    for (let i = 0; i < int16Buf.length; i++) {
+        const val = int16Buf[i];
+        float32[i] = val < 0 ? val / 0x8000 : val / 0x7FFF;
+    }
+    return float32;
+}
+
+// 播放音频
+function playAudioChunk(float32Data) {
+    if (!audioContext) return;
+    const buffer = audioContext.createBuffer(1, float32Data.length, 24000);
+    buffer.copyToChannel(float32Data, 0);
+    const source = audioContext.createBufferSource();
+    source.buffer = buffer;
+    source.connect(audioContext.destination);
+    
+    const currentTime = audioContext.currentTime;
+    if (nextStartTime < currentTime) nextStartTime = currentTime;
+    source.start(nextStartTime);
+    nextStartTime += buffer.duration;
+}
+
+document.getElementById("start").onclick = async () => {
+    document.getElementById("start").disabled = true;
+    document.getElementById("stop").disabled = false;
+    
+    // 重置全局状态
+    currentAiMsgDiv = null;
+    currentUserMsgDiv = null;
+    pendingUserTurns = []; 
+    if (transcriptionTimeout) {
+        clearTimeout(transcriptionTimeout);
+        transcriptionTimeout = null;
+    }
+
+    try {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)({ sampleRate: 24000 });
+    } catch (e) {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    nextStartTime = audioContext.currentTime;
+
+    ws = new WebSocket(WS_URL);
+    ws.binaryType = "arraybuffer";
+
+    ws.onopen = async () => {
+        console.log("Connected");
+        try {
+            micStream = await navigator.mediaDevices.getUserMedia({ 
+                audio: { channelCount: 1, sampleRate: 24000, echoCancellation: true } 
+            });
+            const micSource = audioContext.createMediaStreamSource(micStream);
+            scriptProcessor = audioContext.createScriptProcessor(4096, 1, 1);
+            micSource.connect(scriptProcessor);
+            scriptProcessor.connect(audioContext.destination);
+
+            scriptProcessor.onaudioprocess = (event) => {
+                if (ws.readyState !== WebSocket.OPEN) return;
+                const inputData = event.inputBuffer.getChannelData(0);
+                const pcm16 = floatTo16BitPCM(inputData);
+                let binary = '';
+                const bytes = new Uint8Array(pcm16.buffer);
+                for (let i = 0; i < bytes.byteLength; i++) binary += String.fromCharCode(bytes[i]);
+                ws.send(JSON.stringify({ audio: btoa(binary) }));
+            };
+        } catch (err) {
+            console.error("Mic Error:", err);
+        }
+    };
+
+    ws.onmessage = (evt) => {
+        try {
+            const msg = JSON.parse(evt.data);
+            const mtype = msg.type;
+            
+            // ------------------------------------------
+            // 【调试输出】
+            // ------------------------------------------
+            if (mtype !== "response.audio.delta" && mtype.indexOf("audio_transcript") === -1) {
+                console.log("<<< Server Event:", mtype, msg.data ? msg.data : '');
+            }
+
+
+            // ==========================================
+            // 0. 【AI 回复开始】 -> 释放队列中的用户消息
+            // ==========================================
+            if (mtype === "response.created") {
+                forceRenderPendingUserTurn();
+                currentAiMsgDiv = null;
+            }
+
+
+            // ==========================================
+            // 1. 【用户开始说话】 -> 重置状态，创建占位符, 启动超时
+            // ==========================================
+            else if (mtype === "input_audio_buffer.speech_started") {
+                console.log("Speech Started: New turn initiated.");
+                
+                currentAiMsgDiv = null; 
+
+                // 清理旧的残留占位符
+                if (currentUserMsgDiv) {
+                    currentUserMsgDiv.remove();
+                }
+                
+                // 为当前回合创建新的占位符
+                currentUserMsgDiv = createMessageDiv('user', 'Listening...');
+
+                // 启动定时器：5秒后如果没有转录结果，则移除占位符
+                if (transcriptionTimeout) clearTimeout(transcriptionTimeout);
+                transcriptionTimeout = setTimeout(() => {
+                    // 只有在占位符仍然存在且队列为空时，才执行移除操作
+                    if (currentUserMsgDiv && pendingUserTurns.length === 0) {
+                        console.warn("Transcription timed out after 5s. Placeholder removed.");
+                        currentUserMsgDiv.remove();
+                        currentUserMsgDiv = null;
+                    }
+                }, 5000); 
+            }
+
+            // ==========================================
+            // 2. 【AI 文本流】 -> 追加到 AI 气泡
+            // ==========================================
+            else if (mtype === "response.audio_transcript.delta") {
+                const text = msg.data.delta;
+                
+                // A) 强制创建用户占位符
+                if (!currentUserMsgDiv) {
+                    console.warn("AI text arrived before User's 'speech_started'. Forcing User placeholder.");
+                    currentUserMsgDiv = createMessageDiv('user', '... 服务器正在转录语音为文本');
+                }
+
+                // B) 创建或更新 AI 气泡
+                if (!currentAiMsgDiv) {
+                    currentAiMsgDiv = createMessageDiv('assistant', '');
+                }
+                currentAiMsgDiv.textContent += text;
+                
+                const container = document.getElementById("chat-container");
+                container.scrollTop = container.scrollHeight;
+            }
+
+            // ==========================================
+            // 3. 【用户语音转录完成】 -> 存入队列，清理定时器
+            // ==========================================
+            else if (mtype === "conversation.item.input_audio_transcription.completed") {
+                const text = msg.data.transcript; 
+                
+                // 收到结果，清除定时器
+                if (transcriptionTimeout) {
+                    clearTimeout(transcriptionTimeout);
+                    transcriptionTimeout = null;
+                }
+                
+                if (currentUserMsgDiv) {
+                    // 存入队列
+                    pendingUserTurns.push({ transcript: text, div: currentUserMsgDiv });
+                    currentUserMsgDiv = null; 
+                } else {
+                    // Fallback
+                    createMessageDiv('user', text);
+                }
+            }
+            
+            // 4. 【AI 音频流】
+            else if (mtype === "response.audio.delta" && msg.audio) {
+                const binaryString = atob(msg.audio);
+                const bytes = new Uint8Array(binaryString.length);
+                for (let i = 0; i < binaryString.length; i++) bytes[i] = binaryString.charCodeAt(i);
+                const float32 = pcm16ToFloat32(new Int16Array(bytes.buffer));
+                playAudioChunk(float32);
+            }
+            
+            // 5. 【AI 回复完成】 -> 清理残留的用户占位符（非必要）
+            else if (mtype === "response.done") {
+                // 如果 AI 回复完成了，但用户占位符还存在且没有在队列中，则可能是转录失败，让超时定时器去处理
+                console.log("Response Done.");
+            }
+
+        } catch (e) {
+            console.error("WS Message Error:", e);
+        }
+    };
+    
+    ws.onclose = () => console.log("Closed");
+};
+
+document.getElementById("stop").onclick = () => {
+    document.getElementById("start").disabled = false;
+    document.getElementById("stop").disabled = true;
+    
+    if (scriptProcessor) scriptProcessor.disconnect();
+    if (micStream) micStream.getTracks().forEach(t => t.stop());
+    if (ws) ws.close();
+    if (audioContext) audioContext.close();
+
+    // 【最终清理逻辑】: 停止会话时，清理所有未完成的状态
+    if (transcriptionTimeout) {
+        clearTimeout(transcriptionTimeout);
+        transcriptionTimeout = null;
+    }
+    
+    if (currentUserMsgDiv) {
+        currentUserMsgDiv.remove();
+        currentUserMsgDiv = null;
+    }
+    
+    pendingUserTurns = []; 
+    currentAiMsgDiv = null; 
+    
+    console.log("Session stopped and all pending UI states cleared.");
+};
+</script>
+</body>
+</html>
