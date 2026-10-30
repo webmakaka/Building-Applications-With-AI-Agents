@@ -1,6 +1,6 @@
 # [Книга][Альбада Майкл] Создание приложений с ИИ-агентами. Проектирование и внедрение мультиагентных систем [RUS, 2026]
 
-<img src="./img/book-cover.jpg" alt="Building Applications with AI" height="512px" align="right">
+<img src="./img/book-cover.jpg" alt="Создание приложений с ИИ-агентами. Проектирование и внедрение мультиагентных систем" height="512px" align="right">
 
 [Book][Michael Albada] Building Applications with AI Agents [ENG, 2025]
 
