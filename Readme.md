@@ -27,7 +27,7 @@ https://github.com/michaelalbada/BuildingApplicationsWithAIAgents
   <li>:white_check_mark: :hammer: 06. Знания и память</li>
   <li>:white_check_mark: :hammer: 07. Обучение в агентных системах</li>
   <li>:white_check_mark: :hammer: 08. От одного агента ко многим</li>
-  <li>09. Проверки и измерения</li>
+  <li>:white_check_mark: :hammer: 09. Проверки и измерения</li>
   <li>10. Мониторинг на стадии эксплуатации</li>
   <li>11. Циклы улучшения</li>
   <li>12. Защита агентных систем</li>
