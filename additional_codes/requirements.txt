@@ -14,7 +14,7 @@ beautifulsoup4==4.14.3
 bert-score==0.3.13
 blobfile==3.1.0
 cachetools==6.2.4
-certifi==2025.11.12
+certifi==2026.10.18
 cffi==2.0.0
 charset-normalizer==3.4.4
 click==8.3.1
