@@ -20,8 +20,8 @@ https://github.com/michaelalbada/BuildingApplicationsWithAIAgents
 
 <ul>
   <li>:white_check_mark: :book: 01. Знакомство с агентами</li>
-  <li>:white_check_mark: :book: 02. Проектирование агентных систем</li>
-  <li>:white_check_mark: :book: 03. UX-дизайн для агентных систем</li>
+  <li>:white_check_mark: :hammer: 02. Проектирование агентных систем</li>
+  <li>:white_check_mark: :hammer: 03. UX-дизайн для агентных систем</li>
   <li>:white_check_mark: :hammer: 04. Инструменты</li>
   <li>:white_check_mark: :hammer: 05. Оркестрация</li>
   <li>:white_check_mark: :hammer: 06. Знания и память</li>
@@ -29,9 +29,9 @@ https://github.com/michaelalbada/BuildingApplicationsWithAIAgents
   <li>:white_check_mark: :hammer: 08. От одного агента ко многим</li>
   <li>:white_check_mark: :hammer: 09. Проверки и измерения</li>
   <li>:white_check_mark: :hammer: 10. Мониторинг на стадии эксплуатации</li>
-  <li>11. Циклы улучшения</li>
-  <li>12. Защита агентных систем</li>
-  <li>13. Взаимодействия «человек — агент»</li>
+  <li>:white_check_mark: :hammer: 11. Циклы улучшения</li>
+  <li>:play_or_pause_button: 12. Защита агентных систем</li>
+  <li>:play_or_pause_button: 13. Взаимодействия «человек — агент»</li>
 </ul>
 
 ---
