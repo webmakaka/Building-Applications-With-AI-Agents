@@ -38,7 +38,7 @@ executing==2.2.1
 faiss-cpu==1.13.1
 fastapi==0.124.2
 fastuuid==0.14.0
-filelock==3.20.1
+filelock==4.2.1
 fonttools==4.61.1
 frozenlist==1.8.0
 fsspec==2025.12.0
