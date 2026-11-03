@@ -30,8 +30,8 @@ https://github.com/michaelalbada/BuildingApplicationsWithAIAgents
   <li>:white_check_mark: :hammer: 09. Проверки и измерения</li>
   <li>:white_check_mark: :hammer: 10. Мониторинг на стадии эксплуатации</li>
   <li>:white_check_mark: :hammer: 11. Циклы улучшения</li>
-  <li>:play_or_pause_button: 12. Защита агентных систем</li>
-  <li>:play_or_pause_button: 13. Взаимодействия «человек — агент»</li>
+  <li>:white_check_mark: :hammer: 12. Защита агентных систем</li>
+  <li>:white_check_mark: :book: 13. Взаимодействия «человек — агент»</li>
 </ul>
 
 ---
