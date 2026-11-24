@@ -79,7 +79,7 @@ langchain-mcp-adapters==0.1.14
 langchain-openai==0.3.35
 langchain-text-splitters==0.3.11
 langgraph==0.3.34
-langgraph-checkpoint==2.1.2
+langgraph-checkpoint==4.1.1
 langgraph-prebuilt==0.1.8
 langgraph-sdk==0.1.74
 langsmith==0.4.58
