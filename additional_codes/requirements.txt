@@ -245,7 +245,7 @@ uuid_utils==0.12.0
 uvicorn==0.38.0
 wcwidth==0.2.14
 websockets==15.0.1
-wheel==0.45.1
+wheel==0.46.2
 wikipedia==1.4.0
 wrapt==1.17.3
 xxhash==3.6.0
